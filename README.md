@@ -7,10 +7,9 @@ A tool for automatically installing unmet npm dependencies.
 ```bash
 npm install -g npm-autoinstall
 ```
-
-## Command Line Usage
+## Usage
 ```bash
-npm-autoinstall [path/to/src.js...] [--verbose]
+npm-autoinstall [path/to/src.js...]
 ```
 
 If path to src is omitted, npm-autoinstall will use the main defined in the current projects package.json.
