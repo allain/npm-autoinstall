@@ -1,0 +1,3 @@
+usage: npm-autoinstall [path/to/src.js]
+
+If path to src is omitted, npm-autoinstall will use the main defined in the current projects package.json.
