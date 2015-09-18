@@ -12,4 +12,4 @@ npm install -g npm-autoinstall
 npm-autoinstall [path/to/src.js...]
 ```
 
-If path to src is omitted, npm-autoinstall will use the main defined in the current projects package.json.
+If path to src is omitted, npm-autoinstall will use the main defined in the current project's package.json.
