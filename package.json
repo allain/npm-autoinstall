@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "A tool for automatically installing unmet npm dependencies.",
   "main": "index.js",
+  "bin": {
+    "npm-autoinstall": "./bin/cmd.js"
+  },
   "scripts": {
     "lint": "jshint --config .jshintrc index.js bin/cmd.js"
   },

@@ -3,7 +3,7 @@
 var fs = require('fs');
 var argv = require('minimist')(process.argv.slice(2));
 var findMain = require('find-main');
-var npmi = require('nmpi');
+var npmi = require('npmi');
 
 if (argv.help || argv.h) {
   return fs.createReadStream(__dirname + '/usage.txt').pipe(process.stdout);
