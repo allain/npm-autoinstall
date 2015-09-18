@@ -14,10 +14,15 @@ module.exports = function (srcPaths, cb) {
     async.each(detective(src), function (required, cb) {
       if (required.match(/^[.]/) || seen[required]) return;
 
-      resolve(required, {basedir: process.cwd()}, function(err) {
+      resolve(required, {basedir: process.cwd()}, function (err) {
         if (err) {
           installed.push(required);
-          npmi({name: required}, cb);
+          npmi({
+            name: required,
+            npmLoad: {
+              save: true
+            }
+          }, cb);
         } else {
           cb(null);
         }
