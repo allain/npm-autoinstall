@@ -4,6 +4,7 @@ var Promise = require('bluebird');
 var fs = require('fs');
 var argv = require('minimist')(process.argv.slice(2));
 var findMain = require('find-main');
+var npmi = require('npmi');
 
 var path = require('path');
 var findPackage = require('find-package');
@@ -15,12 +16,8 @@ if (argv.help || argv.h) {
   return fs.createReadStream(__dirname + '/usage.txt').pipe(process.stdout);
 }
 
-var srcPaths = argv._.length ? argv._ : [findMain()];
-
 if (argv._.length) {
-  return autoInstall(argv._).then(function(installed) {
-    console.log('installed dependencies:', installed.length ? installed.join(', ') : 'none');
-  });
+  return autoInstall(argv._);
 }
 
 var pkg = findPackage(process.cwd(), true);
@@ -33,16 +30,13 @@ return autoInstall(findMain()).then(function(installedDependencies) {
   return glob(packageRoute + '/test/**/*.js').then(function(devPaths) {
     devPaths.push(packageRoute + '/test.js');
 
-    return autoInstall(devPaths, {saveDev: true}).then()
-  }).then(function(installedDevDependencies) {
-    console.log('installed dependencies:', installedDependencies.length ? installedDependencies.join(', ') : 'none');
-    console.log('installed dev dependencies:', installedDevDependencies.length ? installedDevDependencies.join(', ') : 'none');
+    return autoInstall(devPaths, {saveDev: true});
   });
 }).catch(function(err) {
   if (err.code === npmi.LOAD_ERR) {
-    console.log('npm load error');
+    console.error('npm load error');
   } else if (err.code === npmi.INSTALL_ERR) {
-    console.log('npm install error');
+    console.error('npm install error');
   }
-  return console.log(err.message);
+  return console.error(err.message);
 });

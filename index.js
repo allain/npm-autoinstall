@@ -15,7 +15,7 @@ module.exports = function (srcPaths, options, cb) {
   var installed = [];
 
   return recursiveDeps(srcPaths).each(function (required) {
-    return resolve(required, {basedir: process.cwd()}).catch(function (err) {
+    return resolve(required, {basedir: process.cwd()}).catch(function () {
       installed.push(required);
       return npmi({name: required, npmLoad: options});
     });
