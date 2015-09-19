@@ -1,1 +1,0 @@
-var sub = require('a/sub');

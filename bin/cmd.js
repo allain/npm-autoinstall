@@ -4,7 +4,6 @@ var Promise = require('bluebird');
 var fs = require('fs');
 var argv = require('minimist')(process.argv.slice(2));
 var findMain = require('find-main');
-var npmi = require('npmi');
 
 var path = require('path');
 var findPackage = require('find-package');
@@ -25,7 +24,7 @@ if (!pkg) {
   return console.error('unable to find package.json');
 }
 
-return autoInstall(findMain()).then(function(installedDependencies) {
+return autoInstall(findMain()).then(function() {
   var packageRoute = path.dirname(pkg.paths.absolute);
   return glob(packageRoute + '/test/**/*.js').then(function(devPaths) {
     devPaths.push(packageRoute + '/test.js');
@@ -33,10 +32,5 @@ return autoInstall(findMain()).then(function(installedDependencies) {
     return autoInstall(devPaths, {saveDev: true});
   });
 }).catch(function(err) {
-  if (err.code === npmi.LOAD_ERR) {
-    console.error('npm load error');
-  } else if (err.code === npmi.INSTALL_ERR) {
-    console.error('npm install error');
-  }
   return console.error(err.message);
 });
