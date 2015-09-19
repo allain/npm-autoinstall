@@ -1,37 +1,26 @@
-var detective = require('detective');
-var npmi = require('npmi');
-var fs = require('fs');
-var async = require('async');
-var resolve = require('resolve');
+var Promise = require('bluebird');
 
-module.exports = function (srcPaths, cb) {
-  var seen = {};
+var npmi = Promise.promisify(require('npmi'));
+var resolve = Promise.promisify(require('resolve'));
+var recursiveDeps = require('./lib/recursive-deps.js');
+
+module.exports = function (srcPaths, options, cb) {
+  if (!cb && typeof options === 'function') {
+    cb = options;
+    options = {
+      save: true
+    };
+  }
+
   var installed = [];
 
-  async.each(srcPaths, function (srcPath, cb) {
-    var src = fs.readFileSync(srcPath, 'utf-8');
-
-    async.each(detective(src), function (required, cb) {
-      if (required.match(/^[.]/) || seen[required]) return;
-
-      resolve(required, {basedir: process.cwd()}, function (err) {
-        if (err) {
-          installed.push(required);
-          npmi({
-            name: required,
-            npmLoad: {
-              save: true
-            }
-          }, cb);
-        } else {
-          cb(null);
-        }
-        seen[required] = true;
-      });
-    }, cb);
-  }, function (err) {
-    if (err) return cb(err);
-
-    cb(null, installed);
+  return recursiveDeps(srcPaths).each(function (required) {
+    return resolve(required, {basedir: process.cwd()}).catch(function (err) {
+      installed.push(required);
+      return npmi({name: required, npmLoad: options});
+    });
+  }).then(function () {
+    return installed;
   });
 };
+
