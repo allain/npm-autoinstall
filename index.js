@@ -1,4 +1,5 @@
 var Promise = require('bluebird');
+var debug = require('debug')('npm-autoinstaller');
 var npm = require('npm');
 
 var resolve = Promise.promisify(require('resolve'));
@@ -17,6 +18,7 @@ module.exports = function (srcPaths, options) {
   var installed = [];
 
   return recursiveDeps(srcPaths).each(function (required) {
+    debug('required modules: %j', required);
     return resolve(required, {basedir: process.cwd()}).catch(function () {
       installed.push(required);
       return new Promise(function(resolve, reject) {
